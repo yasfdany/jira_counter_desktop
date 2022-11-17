@@ -1,0 +1,35 @@
+name: jira_counter
+description: A new Flutter project.
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.18.0 <3.0.0"
+
+dependencies:
+  cached_network_image: ^3.2.2
+  connectivity_plus: ^3.0.2
+  cupertino_icons: ^1.0.2
+  ensure_visible_when_focused: ^1.1.1
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ^2.1.1
+  flutter_svg: ^1.1.6
+  go_router: ^5.1.1
+  google_fonts: ^3.0.1
+  http: ^0.13.5
+  multi_value_listenable_builder: ^0.0.2
+  oktoast: ^3.3.1
+  riverpod: ^2.1.1
+  shared_preferences: ^2.0.15
+  url_launcher: ^6.1.6
+  widget_helper:
+    path: ./packages/widget_helper/
+
+dev_dependencies:
+  flutter_lints: ^2.0.0
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
