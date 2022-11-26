@@ -42,6 +42,8 @@ class TaskProvider extends ChangeNotifier {
 
   late ProjectProvider projectProvider;
 
+  TaskProvider(this.projectProvider);
+
   void reset() {
     filteredIssue.clear();
     selectedStatus.clear();
@@ -83,8 +85,6 @@ class TaskProvider extends ChangeNotifier {
     await getStatuses();
     getIssues(reset: true);
   }
-
-  TaskProvider(this.projectProvider);
 
   void addStatusFilter(String title) async {
     _prefs ??= await SharedPreferences.getInstance();

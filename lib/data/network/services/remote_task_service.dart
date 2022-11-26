@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../config/constant.dart';
@@ -12,15 +12,11 @@ import '../entity/status_response.dart';
 
 class RemoteTaskService extends ApiInterface {
   SharedPreferences? prefs;
-  String? basicAuth;
   String? baseUrl;
 
-  Future<void> getBasicAuth() async {
+  Future<void> loadBaseUrl() async {
     return await SharedPreferences.getInstance().then((prefs) {
       this.prefs ??= prefs;
-      String? email = prefs.getString(Constant.jiraEmail);
-      String? token = prefs.getString(Constant.jiraToken);
-      basicAuth = 'Basic ${base64.encode(utf8.encode('$email:$token'))}';
       baseUrl = prefs.getString(Constant.jiraUrl);
     });
   }
@@ -32,7 +28,7 @@ class RemoteTaskService extends ApiInterface {
     int maxResult = 100,
     List<String> statuses = const [],
   }) async {
-    await getBasicAuth();
+    await loadBaseUrl();
 
     String statusQuery = "";
     bool isFirst = true;
@@ -49,12 +45,7 @@ class RemoteTaskService extends ApiInterface {
     );
 
     try {
-      http.Response response = await ApiClient.client.get(
-        url,
-        headers: {
-          "Authorization": "$basicAuth",
-        },
-      );
+      Response response = await ApiClient().get(url);
 
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
@@ -69,16 +60,11 @@ class RemoteTaskService extends ApiInterface {
 
   @override
   Future<List<StatusData>?> getStatuses() async {
-    await getBasicAuth();
+    await loadBaseUrl();
 
     try {
-      http.Response response = await ApiClient.client.get(
-        Uri.parse(
-          "$baseUrl/rest/api/3/status",
-        ),
-        headers: {
-          'Authorization': "$basicAuth",
-        },
+      Response response = await ApiClient().get(
+        Uri.parse("$baseUrl/rest/api/3/status"),
       );
 
       if (response.statusCode == 200) {
@@ -97,17 +83,12 @@ class RemoteTaskService extends ApiInterface {
     required int startAt,
     int maxResult = 50,
   }) async {
-    await getBasicAuth();
+    await loadBaseUrl();
 
     try {
-      http.Response response = await ApiClient.client.get(
-        Uri.parse(
-          "$baseUrl/rest/api/3/project/search?maxResults=$maxResult&startAt=$startAt",
-        ),
-        headers: {
-          "Authorization": "$basicAuth",
-        },
-      );
+      Response response = await ApiClient().get(Uri.parse(
+        "$baseUrl/rest/api/3/project/search?maxResults=$maxResult&startAt=$startAt",
+      ));
 
       if (response.statusCode == 200) {
         return JiraProjectResponse.fromJson(jsonDecode(response.body));
