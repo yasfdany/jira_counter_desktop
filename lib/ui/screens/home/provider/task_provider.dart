@@ -35,6 +35,7 @@ class TaskProvider extends ChangeNotifier {
 
   SharedPreferences? _prefs;
 
+  bool onlySubtask = true;
   bool loading = true;
   int startAt = 0;
   int total = 0;
@@ -43,6 +44,19 @@ class TaskProvider extends ChangeNotifier {
   late ProjectProvider projectProvider;
 
   TaskProvider(this.projectProvider);
+
+  void toggleOnlySubtask() async {
+    _prefs ??= await SharedPreferences.getInstance();
+    _prefs?.setBool(Constant.onlySubtask, !onlySubtask);
+    onlySubtask = !onlySubtask;
+    notifyListeners();
+  }
+
+  Future loadOnlySubtask() async {
+    _prefs ??= await SharedPreferences.getInstance();
+    onlySubtask = _prefs?.getBool(Constant.onlySubtask) ?? true;
+    notifyListeners();
+  }
 
   void reset() {
     filteredIssue.clear();
@@ -81,6 +95,7 @@ class TaskProvider extends ChangeNotifier {
   }
 
   Future loadData() async {
+    await loadOnlySubtask();
     await projectProvider.getProjects(reset: true);
     await getStatuses();
     getIssues(reset: true);
@@ -229,7 +244,7 @@ class TaskProvider extends ChangeNotifier {
           (issue["fields"]?["assignee"]?["accountId"] ?? "");
       final double storyPoint = (issue["fields"]?["customfield_10016"] ?? 0);
 
-      if (isSubTask) {
+      if (onlySubtask ? isSubTask : true) {
         if (assigneeName.isNotEmpty) {
           if (dataContainer.containsKey(accountId)) {
             dataContainer[accountId]?.point += storyPoint;
