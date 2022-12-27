@@ -25,6 +25,7 @@ class TopPanel extends ConsumerWidget {
     final router = ref.watch(routerProvider);
     final project = ref.watch(projectProvider).selectedProject;
     final loading = ref.watch(taskProvider).loading;
+    final onlySubtask = ref.watch(taskProvider).onlySubtask;
     final isWideScreen = context.isWideScreen;
 
     return Column(
@@ -89,6 +90,41 @@ class TopPanel extends ConsumerWidget {
                     )
                   else
                     Expanded(child: Container()),
+                  if (isWideScreen)
+                    PopupMenuButton<int>(
+                      icon: const Icon(Icons.settings),
+                      onSelected: (int selected) {
+                        switch (selected) {
+                          case 0:
+                            ref.read(taskProvider).toggleOnlySubtask();
+                            break;
+                        }
+                      },
+                      itemBuilder: (BuildContext context) =>
+                          <PopupMenuEntry<int>>[
+                        PopupMenuItem<int>(
+                          value: 0,
+                          child: Row(
+                            children: [
+                              Icon(
+                                onlySubtask
+                                    ? Icons.check_box_rounded
+                                    : Icons.check_box_outline_blank_rounded,
+                              ).addMarginRight(6),
+                              Text(
+                                'Count only Subtask',
+                                style: Themes().black12,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ).addMarginRight(6),
+                  // RippleButton(
+                  //   padding: const EdgeInsets.all(8),
+                  //   onTap: () {},
+                  //   child: const Icon(Icons.settings),
+                  // ).addMarginRight(12),
                   if (isWideScreen)
                     PrimaryButton(
                       enable: !loading,

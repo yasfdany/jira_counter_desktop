@@ -6,4 +6,5 @@ class Constant {
   static const selectedProject = "SELECTED_PROJECT";
   static const jiraProjects = "JIRA_PROJECTS";
   static const jiraIssueStatuses = "JIRA_ISSUE_STATUSES";
+  static const onlySubtask = "ONLY_SUBTASK";
 }
