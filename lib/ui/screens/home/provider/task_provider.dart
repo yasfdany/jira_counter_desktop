@@ -80,7 +80,7 @@ class TaskProvider extends ChangeNotifier {
       final String accountId =
           (issue["fields"]?["assignee"]?["accountId"] ?? "");
 
-      if (isSubTask) {
+      if (onlySubtask ? isSubTask : true) {
         if (selectedAccountId == accountId) {
           filteredIssue.add(issue);
         }
